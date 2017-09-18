@@ -1,0 +1,111 @@
+
+{% extends 'indiancousin/base.html' %}
+{% block title%}Menu{% endblock %}
+
+{% block albums_active %}active{% endblock %}
+
+{% block body %}
+<div class="albums-container container-fluid">
+
+    <!-- Albums -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Menu Detail</h3>
+        </div>
+        {% if all_menu %}
+            {% for menu in all_menu %}
+                <div class="col-sm-4 col-lg-2">
+                    <div class="thumbnail">
+                        <a href="{% url 'indiancousin:detail' menu.id %}">
+                            <img src="{{ menu.logo }}" class="img-responsive">
+                        </a>
+                        <div class="caption">
+                            <h2>{{ menu.menuname }}</h2>
+                            <h4>{{ menu.description }}</h4>
+
+                            <!-- View Details -->
+                            <a href="{% url 'indiancousin:detail' menu.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
+
+                            <!-- Delete Album -->
+                            <form action="#" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="menu_id" value="{{ menu.id }}" />
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </form>
+
+                            <!-- Favorite Album -->
+                            <a href="#" class="btn btn-default btn-sm btn-favorite">
+                                <span class="glyphicon glyphicon-star {% if menu.is_favorite %}active{% endif %}"></span>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        {% else %}
+            <div class="col-sm-12">
+                <br>
+                <a href="#">
+                    <button type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp; Add an Album
+                    </button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- If user searches and there are songs -->
+    {% if items %}
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Items</h3>
+            </div>
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Ingredients</th>
+                                    <th>Price</th>
+                                    <th>Favorite</th>
+                                    <th>Comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.itemname }}</td>
+                                        <td>{{ item.itemprice }}</td>
+                                        <td>
+                                            <a target="_blank" href="">
+                                                <button type="button" class="btn btn-success btn-xs">
+                                                    <span class="glyphicon glyphicon-play"></span>&nbsp; Order
+                                                </button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'music:detail' item.menu.id %}">
+                                                <img src="{{ item.menu.logo }}" class="img-responsive" style="width: 20px; float: left; margin-right: 10px;" />
+                                            </a>
+                                            <a href="{% url 'indiancousin:detail' item.menu.id %}">{{ item.menu.menuname }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'music:favorite' song.id %}" class="btn-favorite"><span class="glyphicon glyphicon-star {% if song.is_favorite %}active{% endif %}"></span></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

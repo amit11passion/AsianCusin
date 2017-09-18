@@ -1,0 +1,92 @@
+{% extends 'indiancousin/base.html' %}
+{% block title%}Item Detail{% endblock %}
+{% block body %}
+<!--here menu come Automaticlly from model Menu in generic.DetailView-->
+
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <!-- Left Album Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="{% url 'indiancousin:detail' menu.id %}">
+                        {% if menu.logo %}
+                            <img src="{{ menu.logo }}" class="img-responsive">
+                        {% else %}
+                            <h3>No image to display</h3>
+                        {% endif %}
+                    </a>
+                    <h1>{{ menu.menuname }} </h1>
+                    <h2>{{ menu.description }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="{% url 'indiancousin:detail' menu.id %}">View All</a></li>
+                <li role="presentation"><a href="#">Add New Item</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Items</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ItemName</th>
+                            <th>Price</th>
+                            <th>Order</th>
+                            <th>Favorite</th>
+                            <th>Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in menu.menuitem_set.all %}
+                            <tr>
+                                <td>{{ item.itemname }}</td>
+                                <td>{{ item.itemprice }}$</td>
+                                <td>
+                                    <a target="_blank" href="">
+                                        <button type="button" class="btn btn-success btn-xs">
+                                            <span class="glyphicon glyphicon-pencil"></span>&nbsp; Order
+                                        </button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-favorite"><span class="glyphicon glyphicon-star {% if item.is_favorite %}active{% endif %}"></span></a>
+                                </td>
+                                <td>
+                                    <form action="#" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="song_id" value="{{ item.id }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
